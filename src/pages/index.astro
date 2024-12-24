@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+type RawCar = {
+	title: string,
+	mainImageUrl: string,
+};
+
+type MappedCar = {
+	title: string,
+	url: string,
+};
+
+const dataURL = "https://aw6hhyue7l-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key=de4ecaa4624ac11a92af5f7d7feb817b&x-algolia-application-id=AW6HHYUE7L";
+
+const data = await fetch(dataURL, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        "requests": [
+            {
+                "indexName": "production_cars_rank_asc",
+                "params": "facetFilters=%5B%5B%22listingStage%3Alive%22%5D%2C%5B%22lotType%3Acar%22%5D%2C%5B%22regionCode%3AUK%22%5D%5D&facets=%5B%22auctionId%22%2C%22collectionId%22%2C%22countryCode%22%2C%22driveSide%22%2C%22isBoosted%22%2C%22listingStage%22%2C%22lotType%22%2C%22noReserve%22%2C%22productMake%22%2C%22regionCode%22%2C%22saleFormat%22%2C%22tags%22%2C%22vendorType%22%5D&filters=listingStage%3Acomingsoon%20%20OR%20%20listingStage%3Alive%20%20OR%20%20listingStage%3Asold&highlightPostTag=__%2Fais-highlight__&highlightPreTag=__ais-highlight__&hitsPerPage=38&maxValuesPerFacet=999&page=0&query="
+            }
+        ]
+    })
+});
+const dataJSON = await data.json();
+
+// TODO: Move this to a testable utility function
+const cars = dataJSON.results[0].hits;
+
+// Limit to only 12 results
+// TODO: Use a const for limit value, and move this to a testable utility function
+const limitedCars = cars.slice(0, 12);
+
+// Map car data
+// TODO: Move this to a testable utility function
+const mappedCars = limitedCars.map(({
+	title,
+	mainImageUrl,
+}: RawCar ) => ({
+	title,
+	url: `${mainImageUrl}?w=400`, // TODO: Move this out to a testable utility function
+}));
+---
+<Layout>
+	<section class="container mx-auto text-emerald-800 p-4 bg-emerald-200 rounded-[24px] border border-emerald-600 border-8">
+		<div class="max-w-prose mb-6 text-center mx-auto">
+			<h1 class="text-5xl mb-2 font-display text-emerald-900">Car Picker Game</h1>
+			<p>The aim of the game is to select a single car from the 12 below to own for a year. All purchase and running costs are included in this hypothetical scenario.</p>
+		</div>
+		<div class="grid grid-cols-4 gap-4">
+			{
+				mappedCars && mappedCars.map(({ title, url }: MappedCar) => (
+					// TOOD: Move this to a "Car" component
+					<div>
+						<img src={url} class="rounded-lg border border-emerald-600 border-2" />
+						<p class="text-emerald-950 font-body">{title}</p>
+					</div>
+			))
+			}
+			</div>
+		</div>
+	</section>
+</Layout>
