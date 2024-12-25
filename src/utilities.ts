@@ -24,3 +24,17 @@ export const generateImageURL = (url: string): string => {
 export const randomiseResults = (results: Array<Result>): Array<Result> => {
     return results.toSorted(() => Math.random() - 0.5);
 }
+
+export const pad = (value: number): string => {
+    return value.toString().padStart(2, '0');
+}
+
+export const formatDateTime = (inputDate: Date): string => {
+    const yyyy = inputDate.getFullYear();
+    const mm = inputDate.getMonth() + 1;
+    const dd = inputDate.getDate();
+    const hh = pad(inputDate.getHours());
+    const ii = pad(inputDate.getMinutes());
+
+    return `${dd}/${mm}/${yyyy} ${hh}:${ii}`;
+}

@@ -1,3 +1,9 @@
+---
+import { formatDateTime } from "../utilities";
+
+const today = new Date();
+const formattedDateTime = formatDateTime(today);
+---
 <section class="mx-auto text-center text-emerald-200 my-8">
-    Made by <a href="https://scottharrison.dev" class="text-emerald-600">Scott Harrison</a>
+    Made by <a href="https://scottharrison.dev" class="text-emerald-600">Scott Harrison</a> - Last Updated: { formattedDateTime }
 </section>
