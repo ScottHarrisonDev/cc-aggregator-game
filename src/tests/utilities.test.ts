@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseResultsFromResponse, limitResults, mapResultData, generateImageURL } from "../utilities";
+import { parseResultsFromResponse, limitResults, mapResultData, generateImageURL, randomiseResults } from "../utilities";
 import type { AlgoliaResponse, Result } from "../types";
 
 describe("Utility Functions", () => {
@@ -119,6 +119,43 @@ describe("Utility Functions", () => {
     });
   });
 });
+
+describe('randomiseResults', () => {
+    it('should return an array of the same length', () => {
+      const input: Array<Result> = [
+        { auctionId: 1, title: "Result 1", mainImageUrl: "url1.jpg", ...mockExtraData() },
+        { auctionId: 2, title: "Result 2", mainImageUrl: "url2.jpg", ...mockExtraData() },
+        { auctionId: 3, title: "Result 3", mainImageUrl: "url3.jpg", ...mockExtraData() },
+      ];
+      const result = randomiseResults(input);
+      expect(result).toHaveLength(input.length);
+    });
+  
+    it('should return the same elements in a different order', () => {
+      const input: Array<Result> = [
+        { auctionId: 1, title: "Result 1", mainImageUrl: "url1.jpg", ...mockExtraData() },
+        { auctionId: 2, title: "Result 2", mainImageUrl: "url2.jpg", ...mockExtraData() },
+        { auctionId: 3, title: "Result 3", mainImageUrl: "url3.jpg", ...mockExtraData() },
+      ];
+      const result = randomiseResults(input);
+  
+      expect(result).toEqual(expect.arrayContaining(input));
+
+      const isOrderChanged = JSON.stringify(result) !== JSON.stringify(input);
+      expect(isOrderChanged).toBe(true);
+    });
+  
+    it('should not modify the original array', () => {
+      const input: Array<Result> = [
+        { auctionId: 1, title: "Result 1", mainImageUrl: "url1.jpg", ...mockExtraData() },
+        { auctionId: 2, title: "Result 2", mainImageUrl: "url2.jpg", ...mockExtraData() },
+        { auctionId: 3, title: "Result 3", mainImageUrl: "url3.jpg", ...mockExtraData() },
+      ];
+      const inputCopy = [...input];
+      randomiseResults(input);
+      expect(input).toEqual(inputCopy);
+    });
+  });
 
 const mockExtraData = (): Omit<Result, "auctionId" | "title" | "mainImageUrl"> => ({
   stage: "live",

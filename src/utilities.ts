@@ -20,3 +20,7 @@ export const mapResultData = (result: Result): MappedResult => {
 export const generateImageURL = (url: string): string => {
     return `${url}?w=400`;
 }
+
+export const randomiseResults = (results: Array<Result>): Array<Result> => {
+    return results.toSorted(() => Math.random() - 0.5);
+}
