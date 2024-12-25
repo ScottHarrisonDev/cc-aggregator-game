@@ -1,19 +1,11 @@
 ---
+import Result from '../components/Result.astro';
+import { DATA_URL, RESULT_LIMIT_COUNT } from '../constants';
 import Layout from '../layouts/Layout.astro';
+import type { MappedResult } from '../types';
+import { limitResults, mapResultData, parseResultsFromResponse } from '../utilities';
 
-type RawCar = {
-	title: string,
-	mainImageUrl: string,
-};
-
-type MappedCar = {
-	title: string,
-	url: string,
-};
-
-const dataURL = "https://aw6hhyue7l-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key=de4ecaa4624ac11a92af5f7d7feb817b&x-algolia-application-id=AW6HHYUE7L";
-
-const data = await fetch(dataURL, {
+const data = await fetch(DATA_URL, {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -29,22 +21,11 @@ const data = await fetch(dataURL, {
 });
 const dataJSON = await data.json();
 
-// TODO: Move this to a testable utility function
-const cars = dataJSON.results[0].hits;
+const cars = parseResultsFromResponse(dataJSON);
 
-// Limit to only 12 results
-// TODO: Use a const for limit value, and move this to a testable utility function
-const limitedCars = cars.slice(0, 12);
+const limitedCars = limitResults(cars, RESULT_LIMIT_COUNT);
 
-// Map car data
-// TODO: Move this to a testable utility function
-const mappedCars = limitedCars.map(({
-	title,
-	mainImageUrl,
-}: RawCar ) => ({
-	title,
-	url: `${mainImageUrl}?w=400`, // TODO: Move this out to a testable utility function
-}));
+const mappedCars = limitedCars.map(mapResultData);
 ---
 <Layout>
 	<section class="container mx-auto text-emerald-800 p-4 bg-emerald-200 rounded-[24px] border border-emerald-600 border-8">
@@ -54,13 +35,9 @@ const mappedCars = limitedCars.map(({
 		</div>
 		<div class="grid grid-cols-4 gap-4">
 			{
-				mappedCars && mappedCars.map(({ title, url }: MappedCar) => (
-					// TOOD: Move this to a "Car" component
-					<div>
-						<img src={url} class="rounded-lg border border-emerald-600 border-2" />
-						<p class="text-emerald-950 font-body">{title}</p>
-					</div>
-			))
+				mappedCars && mappedCars.map(({ title, url }: MappedResult) => (
+					<Result url={url} title={title} />
+				))
 			}
 			</div>
 		</div>
