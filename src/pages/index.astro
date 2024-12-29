@@ -1,6 +1,6 @@
 ---
 import Result from '../components/Result.astro';
-import { DATA_URL, RESULT_LIMIT_COUNT } from '../constants';
+import { DATA_URL, RESULT_LIMIT_COUNT_EASY } from '../constants';
 import Layout from '../layouts/Layout.astro';
 import type { MappedResult } from '../types';
 import { limitResults, mapResultData, parseResultsFromResponse, randomiseResults } from '../utilities';
@@ -25,18 +25,17 @@ const cars = parseResultsFromResponse(dataJSON);
 
 const randomCars = randomiseResults(cars);
 
-const limitedCars = limitResults(randomCars, RESULT_LIMIT_COUNT);
+const limitedCars = limitResults(randomCars, RESULT_LIMIT_COUNT_EASY);
 
 const mappedCars = limitedCars.map(mapResultData);
 ---
 <Layout>
-	<section class="container mx-auto text-emerald-800 p-4 bg-emerald-200 rounded-[24px] border border-emerald-600 border-8">
+	<section class="container mx-auto text-emerald-800 p-4 bg-emerald-200 rounded-[24px] border border-emerald-600 border-8 mdMax:mx-4">
 		<div class="max-w-prose mb-6 text-center mx-auto">
-			<h1 class="text-5xl mb-2 font-display text-emerald-900"><a href={`${import.meta.env.BASE_URL}`}>Car Picker Game</a></h1>
-			<p>The aim of the game is to select a single car from the {RESULT_LIMIT_COUNT} below to own for a year. All purchase and running costs are included in this hypothetical scenario.</p>
-			<p>Can't make your mind up? Try <a href={`${import.meta.env.BASE_URL}/easy-mode`} class="text-emerald-950 underline">Easy Mode</a> instead.</p>
+            <h1 class="text-5xl mb-2 font-display text-emerald-900"><a href={`${import.meta.env.BASE_URL}`}>Car Picker Game</a></h1>
+			<p>The aim of the game is to select a single car from below to own for a year. All purchase and running costs are included in this hypothetical scenario.</p>
 		</div>
-		<div class="grid grid-cols-4 gap-4">
+		<div class="grid mdMax:grid-rows-3 md:grid-cols-3 gap-4">
 			{
 				mappedCars && mappedCars.map(({ title, url }: MappedResult) => (
 					<Result url={url} title={title} />
