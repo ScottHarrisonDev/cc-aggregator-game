@@ -1,6 +1,6 @@
 ---
 import Result from '../components/Result.astro';
-import { DATA_URL, RESULT_LIMIT_COUNT_EASY } from '../constants';
+import { DATA_URL, RESULT_LIMIT_COUNT } from '../constants';
 import Layout from '../layouts/Layout.astro';
 import type { MappedResult } from '../types';
 import { limitResults, mapResultData, parseResultsFromResponse, randomiseResults } from '../utilities';
@@ -25,7 +25,7 @@ const cars = parseResultsFromResponse(dataJSON);
 
 const randomCars = randomiseResults(cars);
 
-const limitedCars = limitResults(randomCars, RESULT_LIMIT_COUNT_EASY);
+const limitedCars = limitResults(randomCars, RESULT_LIMIT_COUNT);
 
 const mappedCars = limitedCars.map(mapResultData);
 ---
