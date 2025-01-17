@@ -1,9 +1,9 @@
 ---
 import Result from '../components/Result.astro';
-import { DATA_URL, RESULT_LIMIT_COUNT } from '../constants';
+import { DATA_URL, FILTER_WORDS, RESULT_LIMIT_COUNT } from '../constants';
 import Layout from '../layouts/Layout.astro';
 import type { MappedResult } from '../types';
-import { limitResults, mapResultData, parseResultsFromResponse, randomiseResults } from '../utilities';
+import { filterResults, limitResults, mapResultData, parseResultsFromResponse, randomiseResults } from '../utilities';
 
 const data = await fetch(DATA_URL, {
     method: "POST",
@@ -25,7 +25,9 @@ const cars = parseResultsFromResponse(dataJSON);
 
 const randomCars = randomiseResults(cars);
 
-const limitedCars = limitResults(randomCars, RESULT_LIMIT_COUNT);
+const filteredCars = filterResults(randomCars, FILTER_WORDS);
+
+const limitedCars = limitResults(filteredCars, RESULT_LIMIT_COUNT);
 
 const mappedCars = limitedCars.map(mapResultData);
 ---

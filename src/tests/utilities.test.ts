@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { parseResultsFromResponse, limitResults, mapResultData, generateImageURL, randomiseResults, pad, formatDateTime } from "../utilities";
+import { describe, it, expect, beforeEach } from "vitest";
+import { parseResultsFromResponse, limitResults, mapResultData, generateImageURL, randomiseResults, pad, formatDateTime, filterResults } from "../utilities";
 import type { AlgoliaResponse, Result } from "../types";
 
 describe("Utility Functions", () => {
@@ -262,4 +262,216 @@ const mockExtraData = (): Omit<Result, "auctionId" | "title" | "mainImageUrl"> =
         driveSide: { value: "RHD", matchLevel: "none", matchedWords: [] },
         tags: [],
     },
+});
+
+describe('filterResults', () => {
+    let mockResults: Array<Result>;
+
+    beforeEach(() => {
+        mockResults = [
+            {
+                auctionId: 1,
+                title: 'Red Car',
+                stage: '',
+                listingStage: '',
+                countryCode: '',
+                regionCode: '',
+                currencyCode: '',
+                currentBid: 0,
+                dtSoldUTC: null,
+                tsSoldUTC: null,
+                dtAuctionEndedUTC: null,
+                tsAuctionEndedUTC: null,
+                dtStageEndsUTC: '',
+                location: '',
+                lotType: '',
+                mainImagePath: '',
+                mainImageUrl: '',
+                vehicleMake: '',
+                productMake: '',
+                noBids: 0,
+                noReserve: false,
+                reserveMet: false,
+                id: '',
+                priceBuyNow: 0,
+                priceSold: 0,
+                rank: 0,
+                tsPublishedUTC: 0,
+                reserveLowered: false,
+                saleFormat: '',
+                saleType: null,
+                slug: '',
+                collectionId: null,
+                vendorType: '',
+                isBoosted: '',
+                productYear: 0,
+                driveSide: '',
+                features: {
+                    driveSide: '',
+                    fuelType: '',
+                    mileage: '',
+                    modelYear: '',
+                    transmission: '',
+                },
+                tags: [],
+                objectID: '',
+                _highlightResult: {
+                    auctionId: { value: '', matchLevel: '', matchedWords: [] },
+                    vehicleMake: { value: '', matchLevel: '', matchedWords: [] },
+                    productMake: { value: '', matchLevel: '', matchedWords: [] },
+                    title: { value: '', matchLevel: '', matchedWords: [] },
+                    vendorType: { value: '', matchLevel: '', matchedWords: [] },
+                    driveSide: { value: '', matchLevel: '', matchedWords: [] },
+                    tags: [],
+                },
+            },
+            {
+                auctionId: 2,
+                title: 'Blue Truck',
+                stage: '',
+                listingStage: '',
+                countryCode: '',
+                regionCode: '',
+                currencyCode: '',
+                currentBid: 0,
+                dtSoldUTC: null,
+                tsSoldUTC: null,
+                dtAuctionEndedUTC: null,
+                tsAuctionEndedUTC: null,
+                dtStageEndsUTC: '',
+                location: '',
+                lotType: '',
+                mainImagePath: '',
+                mainImageUrl: '',
+                vehicleMake: '',
+                productMake: '',
+                noBids: 0,
+                noReserve: false,
+                reserveMet: false,
+                id: '',
+                priceBuyNow: 0,
+                priceSold: 0,
+                rank: 0,
+                tsPublishedUTC: 0,
+                reserveLowered: false,
+                saleFormat: '',
+                saleType: null,
+                slug: '',
+                collectionId: null,
+                vendorType: '',
+                isBoosted: '',
+                productYear: 0,
+                driveSide: '',
+                features: {
+                    driveSide: '',
+                    fuelType: '',
+                    mileage: '',
+                    modelYear: '',
+                    transmission: '',
+                },
+                tags: [],
+                objectID: '',
+                _highlightResult: {
+                    auctionId: { value: '', matchLevel: '', matchedWords: [] },
+                    vehicleMake: { value: '', matchLevel: '', matchedWords: [] },
+                    productMake: { value: '', matchLevel: '', matchedWords: [] },
+                    title: { value: '', matchLevel: '', matchedWords: [] },
+                    vendorType: { value: '', matchLevel: '', matchedWords: [] },
+                    driveSide: { value: '', matchLevel: '', matchedWords: [] },
+                    tags: [],
+                },
+            },
+            {
+                auctionId: 3,
+                title: 'Yellow Bike',
+                stage: '',
+                listingStage: '',
+                countryCode: '',
+                regionCode: '',
+                currencyCode: '',
+                currentBid: 0,
+                dtSoldUTC: null,
+                tsSoldUTC: null,
+                dtAuctionEndedUTC: null,
+                tsAuctionEndedUTC: null,
+                dtStageEndsUTC: '',
+                location: '',
+                lotType: '',
+                mainImagePath: '',
+                mainImageUrl: '',
+                vehicleMake: '',
+                productMake: '',
+                noBids: 0,
+                noReserve: false,
+                reserveMet: false,
+                id: '',
+                priceBuyNow: 0,
+                priceSold: 0,
+                rank: 0,
+                tsPublishedUTC: 0,
+                reserveLowered: false,
+                saleFormat: '',
+                saleType: null,
+                slug: '',
+                collectionId: null,
+                vendorType: '',
+                isBoosted: '',
+                productYear: 0,
+                driveSide: '',
+                features: {
+                    driveSide: '',
+                    fuelType: '',
+                    mileage: '',
+                    modelYear: '',
+                    transmission: '',
+                },
+                tags: [],
+                objectID: '',
+                _highlightResult: {
+                    auctionId: { value: '', matchLevel: '', matchedWords: [] },
+                    vehicleMake: { value: '', matchLevel: '', matchedWords: [] },
+                    productMake: { value: '', matchLevel: '', matchedWords: [] },
+                    title: { value: '', matchLevel: '', matchedWords: [] },
+                    vendorType: { value: '', matchLevel: '', matchedWords: [] },
+                    driveSide: { value: '', matchLevel: '', matchedWords: [] },
+                    tags: [],
+                },
+            },
+        ];
+    });
+
+    it('should return all results when filterWords is empty', () => {
+        const filterWords: string[] = [];
+        const filteredResults = filterResults(mockResults, filterWords);
+
+        expect(filteredResults).toEqual(mockResults);
+    });
+
+    it('should filter out results whose title contains any word from filterWords', () => {
+        const filterWords: string[] = ['Car', 'Bike'];
+        const filteredResults = filterResults(mockResults, filterWords);
+
+        expect(filteredResults).toEqual([mockResults[1]]);
+    });
+
+    it('should not filter results if no title matches any filter word', () => {
+        const filterWords: string[] = ['Plane', 'Boat'];
+        const filteredResults = filterResults(mockResults, filterWords);
+
+        expect(filteredResults).toEqual(mockResults);
+    });
+
+    it('should return an empty array if all results are filtered out', () => {
+        const filterWords: string[] = ['Car', 'Truck', 'Bike'];
+        const filteredResults = filterResults(mockResults, filterWords);
+
+        expect(filteredResults).toEqual([]);
+    });
+
+    it('should handle case-insensitive filtering', () => {
+        const filterWords: string[] = ['car', 'bike']; // lowercase
+        const filteredResults = filterResults(mockResults, filterWords);
+
+        expect(filteredResults).toEqual([mockResults[1]]);
+    });
 });

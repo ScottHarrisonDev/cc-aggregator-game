@@ -8,6 +8,12 @@ export const limitResults = (results: Array<Result>, limit: number): Array<Resul
     return results.slice(0, limit);
 }
 
+export const filterResults = (results: Array<Result>, filterWords: Array<string>): Array<Result> => {
+    return results.filter(({ title }) => {
+        return !filterWords.some((word) => title.toLowerCase().includes(word.toLowerCase()));
+    });
+}
+
 export const mapResultData = (result: Result): MappedResult => {
     const { title, mainImageUrl } = result;
 
